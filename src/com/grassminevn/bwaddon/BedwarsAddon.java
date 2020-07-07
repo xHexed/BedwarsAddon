@@ -27,7 +27,7 @@ public class BedwarsAddon extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        saveConfig();
+        saveDefaultConfig();
         Util.lobby = getConfig().getString("lobby");
         plugin = this;
         final CommandExecutor cmd = new CommandHandler();
