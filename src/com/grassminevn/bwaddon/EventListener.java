@@ -20,7 +20,7 @@ public class EventListener implements Listener {
   @EventHandler
   public void onPlayerQuit(final PlayerQuitArenaEvent event) {
     final Arena arena = event.getArena();
-    sendDataToSocket("quit:" + arena.getName() + ":" + event.getPlayer().getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
+    sendDataToSocket("quit:" + arena.getName() + ":" + event.getPlayer().getName() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
     Util.connect(event.getPlayer());
   }
 
