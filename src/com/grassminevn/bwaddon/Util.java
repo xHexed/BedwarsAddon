@@ -5,6 +5,7 @@ import org.bukkit.plugin.messaging.PluginMessageRecipient;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 
 public class Util {
@@ -12,7 +13,7 @@ public class Util {
 
     public static void sendDataToSocket(final String data) {
         try {
-            final Socket client = new Socket("127.0.0.1", 2);
+            final Socket client = new Socket(InetAddress.getLocalHost(), 2);
             final DataOutputStream ds = new DataOutputStream(client.getOutputStream());
             ds.writeUTF(data);
             ds.close();

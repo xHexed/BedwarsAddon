@@ -21,7 +21,7 @@ public class BedwarsAddon extends JavaPlugin {
         public void run() {
             System.out.println("Sending arena enable data...");
             final Arena arena = BedwarsAPI.getArenas().get(0);
-            Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
+            Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + Bukkit.getServer().getPort());
         }
     };
 
@@ -46,6 +46,7 @@ public class BedwarsAddon extends JavaPlugin {
         new Thread(() -> {
             try {
                 socket.accept();
+                System.out.println("stop");
                 sendTask.cancel();
             } catch (final IOException e) {
                 e.printStackTrace();
@@ -55,6 +56,6 @@ public class BedwarsAddon extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Util.sendDataToSocket("disable:" + BedwarsAPI.getArenas().get(0));
+        Util.sendDataToSocket("disable:" + BedwarsAPI.getArenas().get(0).getName());
     }
 }
