@@ -1,0 +1,8 @@
+version: "1.0"
+name: BedwarsAddon
+author: xHexed
+main: com.grassminevn.bwaddon.BedwarsAddon
+description: Bedwars Addon
+commands:
+  bwa:
+    description: Addon
