@@ -7,6 +7,7 @@ import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 
 import static com.grassminevn.bwaddon.Util.sendDataToSocket;
 
@@ -28,5 +29,10 @@ public class EventListener implements Listener {
   public void onArenaUpdate(final ArenaStatusUpdateEvent event) {
     final Arena arena = event.getArena();
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
+  }
+
+  @EventHandler
+  public void onCommand(final ServerCommandEvent event) {
+    System.out.println(event.getCommand());
   }
 }

@@ -3,6 +3,8 @@ name: BedwarsAddon
 author: xHexed
 main: com.grassminevn.bwaddon.BedwarsAddon
 description: Bedwars Addon
+softdepend:
+- MBedwars
 commands:
   bwa:
     description: Addon
