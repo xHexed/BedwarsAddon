@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.List;
 
 public class BedwarsAddon extends JavaPlugin {
     public static BedwarsAddon getInstance() {
@@ -21,7 +22,9 @@ public class BedwarsAddon extends JavaPlugin {
         @Override
         public void run() {
             System.out.println("Sending arena enable data...");
-            final Arena arena = BedwarsAPI.getArenas().get(0);
+            final List<Arena> list = BedwarsAPI.getArenas();
+            if (list.size() == 0) return;
+            final Arena arena = list.get(0);
             Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + port);
         }
     };
@@ -48,7 +51,6 @@ public class BedwarsAddon extends JavaPlugin {
         new Thread(() -> {
             try {
                 socket.accept();
-                System.out.println("stop");
                 sendTask.cancel();
             } catch (final IOException e) {
                 e.printStackTrace();
