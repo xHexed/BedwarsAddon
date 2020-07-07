@@ -38,7 +38,7 @@ public class BedwarsAddon extends JavaPlugin {
         sendTask.runTaskTimerAsynchronously(this, 0, 200);
 
         try {
-            socket = new ServerSocket(2);
+            socket = new ServerSocket(getServer().getPort());
         } catch (final IOException e) {
             e.printStackTrace();
         }
