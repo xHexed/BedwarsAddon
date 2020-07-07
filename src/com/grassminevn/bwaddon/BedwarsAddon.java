@@ -16,12 +16,13 @@ public class BedwarsAddon extends JavaPlugin {
 /*    */   }
     private static BedwarsAddon plugin;
     private static ServerSocket socket;
+    private static int port;
     private static final BukkitRunnable sendTask = new BukkitRunnable() {
         @Override
         public void run() {
             System.out.println("Sending arena enable data...");
             final Arena arena = BedwarsAPI.getArenas().get(0);
-            Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + Bukkit.getServer().getPort());
+            Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + port);
         }
     };
 
@@ -29,6 +30,7 @@ public class BedwarsAddon extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         Util.lobby = getConfig().getString("lobby");
+        port = getConfig().getInt("port");
         plugin = this;
         final CommandExecutor cmd = new CommandHandler();
         getCommand("bwa").setExecutor(cmd);
@@ -38,7 +40,7 @@ public class BedwarsAddon extends JavaPlugin {
         sendTask.runTaskTimerAsynchronously(this, 0, 200);
 
         try {
-            socket = new ServerSocket(getServer().getPort());
+            socket = new ServerSocket(port);
         } catch (final IOException e) {
             e.printStackTrace();
         }
