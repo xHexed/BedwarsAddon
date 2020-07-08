@@ -16,6 +16,7 @@ public class EventListener implements Listener {
   public void onPlayerJoin(final PlayerJoinEvent event) {
     final Arena arena = BedwarsAPI.getArenas().get(0);
     sendDataToSocket("join:" + arena.getName() + ":" + event.getPlayer().getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
+    arena.addPlayer(event.getPlayer());
   }
 
   @EventHandler
