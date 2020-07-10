@@ -7,8 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.List;
 
 public class BedwarsAddon extends JavaPlugin {
@@ -16,46 +14,26 @@ public class BedwarsAddon extends JavaPlugin {
 /* 11 */     return plugin;
 /*    */   }
     private static BedwarsAddon plugin;
-    private static ServerSocket socket;
-    private static int port;
-    private static final BukkitRunnable sendTask = new BukkitRunnable() {
-        @Override
-        public void run() {
-            System.out.println("Sending arena enable data...");
-            final List<Arena> list = BedwarsAPI.getArenas();
-            if (list.size() == 0) return;
-            final Arena arena = list.get(0);
-            Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + port);
-        }
-    };
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
+        saveConfig();
         Util.lobby = getConfig().getString("lobby");
-        port = getConfig().getInt("port");
         plugin = this;
         final CommandExecutor cmd = new CommandHandler();
         getCommand("bwa").setExecutor(cmd);
         Bukkit.getServer().getPluginManager().registerEvents(new EventListener(), this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        sendTask.runTaskTimerAsynchronously(this, 0, 200);
-
-        try {
-            socket = new ServerSocket(port);
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-
-        new Thread(() -> {
-            try {
-                socket.accept();
-                sendTask.cancel();
-            } catch (final IOException e) {
-                e.printStackTrace();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                final List<Arena> list = BedwarsAPI.getArenas();
+                if (list.size() == 0) return;
+                final Arena arena = list.get(0);
+                Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
             }
-        }).start();
+        }.runTaskTimerAsynchronously(this, 0, 200);
     }
 
     @Override
