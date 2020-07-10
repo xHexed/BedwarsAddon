@@ -10,13 +10,25 @@ public class CommandHandler implements CommandExecutor {
         if (args.length < 1 || (sender instanceof Player && !sender.hasPermission("admin"))) return false;
         switch (args[0].toLowerCase()) {
             case "reload":
-                BedwarsAddon.getInstance().reloadConfig();
-                Util.lobby = BedwarsAddon.getInstance().getConfig().getString("lobby");
+                BedwarsAddon.reloadSettings();
                 sender.sendMessage("Reload xong");
                 return true;
             case "send":
                 if (args.length < 2) return false;
                 Util.sendDataToSocket(args[1]);
+                return true;
+            case "debug":
+                if (args.length < 2) return false;
+                if (BedwarsAddon.debug.contains(args[1])) {
+                    BedwarsAddon.debug.remove(args[1]);
+                    sender.sendMessage("Removed " + args[1]);
+                }
+                else {
+                    BedwarsAddon.debug.add(args[1]);
+                    sender.sendMessage("Added " + args[1]);
+                }
+                BedwarsAddon.saveDebug();
+                return true;
             default:
                 return true;
         }
