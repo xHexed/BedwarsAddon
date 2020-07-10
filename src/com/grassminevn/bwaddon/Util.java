@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class Util {
     static String lobby;
@@ -20,7 +21,7 @@ public class Util {
             client.close();
         }
         catch (final IOException e) {
-            e.printStackTrace();
+            Logger.getGlobal().warning("Error on sending data: " + e.toString());
         }
     }
 
