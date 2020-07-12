@@ -2,7 +2,9 @@ package com.grassminevn.bwaddon;
 
 import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.ArenaStatusUpdateEvent;
+import de.marcely.bedwars.api.event.PlayerJoinArenaEvent;
 import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
+import de.marcely.bedwars.api.event.PlayerQuitArenaSpectatorEvent;
 import de.marcely.bedwars.dD;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +15,12 @@ import org.bukkit.event.server.ServerCommandEvent;
 import static com.grassminevn.bwaddon.Util.sendDataToSocket;
 
 public class EventListener implements Listener {
+  @EventHandler
+  public void arenaDebug(final PlayerJoinArenaEvent event) {
+    if (event.getFailReason() == null) return;
+    System.out.println(event.getFailReason().name());
+  }
+
   @EventHandler
   public void onPlayerJoin(final PlayerJoinEvent event) {
     final Player player = event.getPlayer();
@@ -33,6 +41,11 @@ public class EventListener implements Listener {
     }
     final Arena arena = event.getArena();
     sendDataToSocket("quit:" + arena.getName() + ":" + event.getPlayer().getName() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
+    Util.connect(event.getPlayer());
+  }
+
+  @EventHandler
+  public void onPlayerQuitSpec(final PlayerQuitArenaSpectatorEvent event) {
     Util.connect(event.getPlayer());
   }
 
