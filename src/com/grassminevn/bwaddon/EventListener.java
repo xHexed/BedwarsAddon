@@ -46,6 +46,7 @@ public class EventListener implements Listener {
 
   @EventHandler
   public void onPlayerQuitSpec(final PlayerQuitArenaSpectatorEvent event) {
+    if (event.getArena().getPlayers().contains(event.getPlayer())) return;
     Util.connect(event.getPlayer());
   }
 
