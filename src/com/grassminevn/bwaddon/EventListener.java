@@ -1,9 +1,9 @@
 package com.grassminevn.bwaddon;
 
-import de.marcely.bedwars.api.Arena;
-import de.marcely.bedwars.api.BedwarsAPI;
+import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.ArenaStatusUpdateEvent;
 import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
+import de.marcely.bedwars.dD;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,12 +18,19 @@ public class EventListener implements Listener {
     final Player player = event.getPlayer();
     if (BedwarsAddon.debug.contains(player.getName())) return;
     final Arena arena = BedwarsAPI.getArenas().get(0);
-    sendDataToSocket("join:" + arena.getName() + ":" + player.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
+    if (arena.GetStatus().equals(ArenaStatus.Running)) {
+      dD.a(player, (de.marcely.bedwars.game.arena.Arena) arena, SpectateReason.PLUGIN);
+      return;
+    }
     arena.addPlayer(player);
+    sendDataToSocket("join:" + arena.getName() + ":" + player.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
   }
 
   @EventHandler
   public void onPlayerQuit(final PlayerQuitArenaEvent event) {
+    if (event.getReason() == KickReason.Lose || event.getReason() == KickReason.Draw) {
+      return;
+    }
     final Arena arena = event.getArena();
     sendDataToSocket("quit:" + arena.getName() + ":" + event.getPlayer().getName() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
     Util.connect(event.getPlayer());
