@@ -9,6 +9,7 @@ import de.marcely.bedwars.dD;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
@@ -54,6 +55,14 @@ public class EventListener implements Listener {
   public void onArenaUpdate(final ArenaStatusUpdateEvent event) {
     final Arena arena = event.getArena();
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
+  }
+
+  @EventHandler
+  public void onPlayerExplode(final EntityDamageEvent event) {
+    if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION ||
+            event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+      event.setDamage(event.getFinalDamage() / 2);
+    }
   }
 
   @EventHandler
