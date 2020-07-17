@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -42,6 +43,20 @@ public class BedwarsAddon extends JavaPlugin {
                 Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + arena.GetStatus().name());
             }
         }.runTaskTimerAsynchronously(this, 0, 200);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                final List<Arena> list = BedwarsAPI.getArenas();
+                if (list.size() == 0) return;
+                final Arena arena = list.get(0);
+                for (final Player player : Bukkit.getOnlinePlayers()) {
+                    if (arena.getPlayers().contains(player) ||
+                    arena.getSpectators().contains(player)) continue;
+                    Util.connect(player);
+                }
+            }
+        }.runTaskTimerAsynchronously(this, 0, 20);
     }
 
     @Override
