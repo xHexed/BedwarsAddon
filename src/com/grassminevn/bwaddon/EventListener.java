@@ -6,6 +6,7 @@ import de.marcely.bedwars.api.event.PlayerJoinArenaEvent;
 import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
 import de.marcely.bedwars.api.event.PlayerQuitArenaSpectatorEvent;
 import de.marcely.bedwars.dD;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,6 +55,11 @@ public class EventListener implements Listener {
   @EventHandler
   public void onArenaUpdate(final ArenaStatusUpdateEvent event) {
     final Arena arena = event.getArena();
+    if (arena.GetStatus() == ArenaStatus.Reseting) {
+      for (final Player player : Bukkit.getOnlinePlayers()) {
+        Util.connect(player);
+      }
+    }
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
   }
 
