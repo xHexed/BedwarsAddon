@@ -40,7 +40,7 @@ public class BedwarsAddon extends JavaPlugin {
                 final List<Arena> list = BedwarsAPI.getArenas();
                 if (list.size() == 0) return;
                 final Arena arena = list.get(0);
-                Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + arena.GetStatus().name());
+                Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + arena.GetStatus().name() + ":" + arena.getPlayers());
             }
         }.runTaskTimerAsynchronously(this, 0, 200);
 
