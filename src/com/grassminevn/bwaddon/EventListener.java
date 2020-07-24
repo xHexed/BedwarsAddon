@@ -68,6 +68,7 @@ public class EventListener implements Listener {
 
   @EventHandler
   public void onShopBuy(final ShopBuyEvent event) {
+    if (!event.isGivingProducts()) return;
     if (event.getShopItem().getIcon().getType().name().contains("SWORD")) {
       event.getBuyer().getInventory().remove(Material.WOOD_SWORD);
     }
