@@ -1,11 +1,9 @@
 package com.grassminevn.bwaddon;
 
 import de.marcely.bedwars.api.*;
-import de.marcely.bedwars.api.event.ArenaStatusUpdateEvent;
-import de.marcely.bedwars.api.event.PlayerJoinArenaEvent;
-import de.marcely.bedwars.api.event.PlayerQuitArenaEvent;
-import de.marcely.bedwars.api.event.PlayerQuitArenaSpectatorEvent;
+import de.marcely.bedwars.api.event.*;
 import de.marcely.bedwars.dD;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -64,5 +62,12 @@ public class EventListener implements Listener {
     }
     if (event.getCause() == EntityDamageEvent.DamageCause.VOID)
       event.setDamage(Double.MAX_VALUE);
+  }
+
+  @EventHandler
+  public void onShopBuy(final ShopBuyEvent event) {
+    if (event.getShopItem().getIcon().getType().name().contains("SWORD")) {
+      event.getBuyer().getInventory().remove(Material.WOOD_SWORD);
+    }
   }
 }
