@@ -62,8 +62,6 @@ public class EventListener implements Listener {
             event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
       event.setDamage(event.getFinalDamage() / 2);
     }
-    if (event.getCause() == EntityDamageEvent.DamageCause.VOID)
-      event.setDamage(Double.MAX_VALUE);
   }
 
   @EventHandler
