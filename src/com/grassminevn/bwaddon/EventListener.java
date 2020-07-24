@@ -58,11 +58,13 @@ public class EventListener implements Listener {
   }
 
   @EventHandler
-  public void onPlayerExplode(final EntityDamageEvent event) {
+  public void onPlayerHurt(final EntityDamageEvent event) {
     if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION ||
             event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
       event.setDamage(event.getFinalDamage() / 2);
     }
+    if (event.getCause() == EntityDamageEvent.DamageCause.VOID)
+      event.setDamage(Double.MAX_VALUE);
   }
 
   @EventHandler
