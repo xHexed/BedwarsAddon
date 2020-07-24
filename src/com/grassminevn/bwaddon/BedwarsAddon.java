@@ -53,7 +53,7 @@ public class BedwarsAddon extends JavaPlugin {
                 for (final Player player : Bukkit.getOnlinePlayers()) {
                     if (arena.getPlayers().contains(player) ||
                     arena.getSpectators().contains(player) ||
-                    !debug.contains(player.getName())) continue;
+                    debug.contains(player.getName())) continue;
                     Util.connect(player);
                 }
             }
