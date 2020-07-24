@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.server.ServerCommandEvent;
 
 import static com.grassminevn.bwaddon.Util.sendDataToSocket;
 
@@ -19,7 +18,7 @@ public class EventListener implements Listener {
   @EventHandler
   public void arenaDebug(final PlayerJoinArenaEvent event) {
     if (event.getFailReason() == null) return;
-    System.out.println(event.getFailReason().name());
+    System.out.println(event.getPlayer() + ":" + event.getFailReason().name());
   }
 
   @EventHandler
@@ -65,10 +64,5 @@ public class EventListener implements Listener {
     }
     if (event.getCause() == EntityDamageEvent.DamageCause.VOID)
       event.setDamage(Double.MAX_VALUE);
-  }
-
-  @EventHandler
-  public void onCommand(final ServerCommandEvent event) {
-    System.out.println(event.getCommand());
   }
 }
