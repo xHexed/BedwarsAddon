@@ -1,6 +1,7 @@
 package com.grassminevn.bwaddon;
 
-import org.bukkit.plugin.messaging.PluginMessageRecipient;
+import me.MathiasMC.PvPLevels.PvPLevelsAPI;
+import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -25,7 +26,8 @@ public class Util {
         }
     }
 
-    public static void connect(final PluginMessageRecipient player) {
+    public static void connect(final Player player) {
+        PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
         final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         final DataOutputStream out = new DataOutputStream(bytes);
         try {
