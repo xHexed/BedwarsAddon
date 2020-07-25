@@ -4,12 +4,16 @@ import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.*;
 import de.marcely.bedwars.dD;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.grassminevn.bwaddon.Util.sendDataToSocket;
 
@@ -55,25 +59,30 @@ public class EventListener implements Listener {
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
   }
 
-  @EventHandler
-  public void onPlayerHurt(final EntityDamageEvent event) {
-    if (!(event.getEntity() instanceof  Player)) return;
-    if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION ||
-            event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-      event.setDamage(event.getFinalDamage() / 2);
-    }
-  }
-
-  @EventHandler
+  @EventHandler(ignoreCancelled = true)
   public void onShopBuy(final ShopBuyEvent event) {
-    if (!event.isGivingProducts()) return;
-    if (event.getShopItem().getIcon().getType().name().contains("SWORD")) {
-      event.getBuyer().getInventory().remove(Material.WOOD_SWORD);
+    if (event.getProblems().isEmpty() || !event.isTakingPayments() || !event.isGivingProducts()) return;
+    for (final ShopBuyEvent.ShopBuyProblem problem : event.getProblems()) {
+      if (problem.equals(ShopBuyEvent.ShopBuyProblem.DEFAULT_NOT_ENOUGH_ITEMS)) {
+        if (event.getShopItem().getIcon().getType().name().contains("SWORD")) {
+          event.getBuyer().getInventory().remove(Material.WOOD_SWORD);
+          return;
+        }
+      }
     }
   }
 
   @EventHandler
   public void onItemDamage(final PlayerItemDamageEvent event) {
     event.setCancelled(true);
+  }
+
+  @EventHandler
+  public void onPlayerPickup(final EntityPickupItemEvent event) {
+    if (!(event.getEntity() instanceof  Player)) return;
+    final List<Entity> nearby = event.getEntity().getNearbyEntities(1, 0.5, 1);
+    if (!nearby.isEmpty()) return;
+
+    event.setCancelled(ThreadLocalRandom.current().nextBoolean());
   }
 }
