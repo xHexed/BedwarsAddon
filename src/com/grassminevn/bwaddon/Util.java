@@ -1,6 +1,7 @@
 package com.grassminevn.bwaddon;
 
 import me.MathiasMC.PvPLevels.PvPLevelsAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
@@ -27,20 +28,22 @@ public class Util {
     }
 
     public static void connect(final Player player) {
-        PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
-        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        final DataOutputStream out = new DataOutputStream(bytes);
-        try {
-            out.writeUTF("Connect");
-            out.writeUTF(lobby);
-            player.sendPluginMessage(BedwarsAddon.getInstance(), "BungeeCord", bytes.toByteArray());
-            out.flush();
-            bytes.flush();
-            out.close();
-            bytes.close();
-        }
-        catch (final IOException e) {
-            e.printStackTrace();
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(BedwarsAddon.getInstance(), () -> {
+            PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
+            final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            final DataOutputStream out = new DataOutputStream(bytes);
+            try {
+                out.writeUTF("Connect");
+                out.writeUTF(lobby);
+                player.sendPluginMessage(BedwarsAddon.getInstance(), "BungeeCord", bytes.toByteArray());
+                out.flush();
+                bytes.flush();
+                out.close();
+                bytes.close();
+            }
+            catch (final IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
