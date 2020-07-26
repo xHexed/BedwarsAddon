@@ -2,7 +2,6 @@ package com.grassminevn.bwaddon;
 
 import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.*;
-import de.marcely.bedwars.dD;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,9 +22,9 @@ public class EventListener implements Listener {
   public void onPlayerJoin(final PlayerJoinEvent event) {
     final Player player = event.getPlayer();
     if (BedwarsAddon.debug.contains(player.getName())) return;
-    final Arena arena = BedwarsAPI.getArenas().get(0);
+    final de.marcely.bedwars.game.arena.Arena arena = (de.marcely.bedwars.game.arena.Arena) BedwarsAPI.getArenas().get(0);
     if (arena.GetStatus().equals(ArenaStatus.Running)) {
-      dD.a(player, (de.marcely.bedwars.game.arena.Arena) arena, SpectateReason.PLUGIN);
+      BedwarsAPI.enterSpectatorMode(player, arena, SpectateReason.PLUGIN);
       return;
     }
     arena.addPlayer(player);
