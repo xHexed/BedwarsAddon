@@ -4,16 +4,11 @@ import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.*;
 import de.marcely.bedwars.dD;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static com.grassminevn.bwaddon.Util.sendDataToSocket;
 
@@ -75,14 +70,5 @@ public class EventListener implements Listener {
   @EventHandler
   public void onItemDamage(final PlayerItemDamageEvent event) {
     event.setCancelled(true);
-  }
-
-  @EventHandler
-  public void onPlayerPickup(final EntityPickupItemEvent event) {
-    if (!(event.getEntity() instanceof  Player)) return;
-    final List<Entity> nearby = event.getEntity().getNearbyEntities(1, 0.5, 1);
-    if (!nearby.isEmpty()) return;
-
-    event.setCancelled(ThreadLocalRandom.current().nextBoolean());
   }
 }
