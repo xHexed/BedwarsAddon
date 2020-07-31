@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -63,6 +64,14 @@ public class EventListener implements Listener {
           return;
         }
       }
+    }
+  }
+
+  @EventHandler
+  public void onPlayerExplode(final EntityDamageEvent event) {
+    if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION ||
+            event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+      event.setDamage(event.getFinalDamage() * 7 / 10);
     }
   }
 
