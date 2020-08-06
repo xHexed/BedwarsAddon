@@ -1,5 +1,6 @@
 package com.grassminevn.bwaddon;
 
+import com.grassminevn.levels.LevelsAPI;
 import me.MathiasMC.PvPLevels.PvPLevelsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -30,6 +31,7 @@ public class Util {
     public static void connect(final Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(BedwarsAddon.getInstance(), () -> {
             PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
+            LevelsAPI.api.syncSave(player.getUniqueId().toString());
             final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             final DataOutputStream out = new DataOutputStream(bytes);
             try {
