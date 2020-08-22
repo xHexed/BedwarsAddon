@@ -3,12 +3,16 @@ package com.grassminevn.bwaddon;
 import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.*;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import static com.grassminevn.bwaddon.Util.sendDataToSocket;
 
@@ -56,14 +60,12 @@ public class EventListener implements Listener {
 
   @EventHandler(ignoreCancelled = true)
   public void onShopBuy(final ShopBuyEvent event) {
-    if (event.getProblems().isEmpty() || !event.isTakingPayments() || !event.isGivingProducts()) return;
-    for (final ShopBuyEvent.ShopBuyProblem problem : event.getProblems()) {
-      if (!problem.equals(ShopBuyEvent.ShopBuyProblem.DEFAULT_NOT_ENOUGH_ITEMS)) {
-        if (event.getShopItem().getIcon().getType().name().contains("SWORD")) {
-          event.getBuyer().getInventory().remove(Material.WOOD_SWORD);
-          return;
-        }
-      }
+    if (!event.getProblems().isEmpty()) {
+      if (event.getProblems().contains(ShopBuyEvent.ShopBuyProblem.DEFAULT_NOT_ENOUGH_ITEMS))
+        return;
+    }
+    if (event.getShopItem().getIcon().getType().name().contains("SWORD")) {
+      event.getBuyer().getInventory().remove(Material.WOOD_SWORD);
     }
   }
 
@@ -71,12 +73,38 @@ public class EventListener implements Listener {
   public void onPlayerExplode(final EntityDamageEvent event) {
     if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION ||
             event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-      event.setDamage(event.getFinalDamage() * 7 / 10);
+      if (event.getFinalDamage() <= 5)
+        event.setDamage(event.getDamage() * 8 / 10);
+      else if (event.getFinalDamage() <= 10)
+        event.setDamage(event.getDamage() * 7 / 10);
+      else if (event.getFinalDamage() <= 15)
+        event.setDamage(event.getDamage() * 6 / 10);
+      else
+        event.setDamage(event.getDamage() * 5 / 10);
     }
   }
 
   @EventHandler
   public void onItemDamage(final PlayerItemDamageEvent event) {
     event.setCancelled(true);
+  }
+
+  @EventHandler
+  public void onPlayerDamage(final EntityDamageByEntityEvent event) {
+    final Entity damager = event.getDamager();
+    final Entity victim = event.getEntity();
+    if (!(damager instanceof Player) || !(victim instanceof Player)) return;
+    if (isCritical((LivingEntity) damager)) {
+      event.setDamage(event.getDamage() * 8 / 10);
+    }
+  }
+
+  private boolean isCritical(final LivingEntity player) {
+    return player.getFallDistance() > 0.0F &&
+            !player.isOnGround() &&
+            !player.isInsideVehicle() &&
+            !player.hasPotionEffect(PotionEffectType.BLINDNESS) &&
+            player.getLocation().getBlock().getType() != Material.LADDER &&
+            player.getLocation().getBlock().getType() != Material.VINE;
   }
 }
