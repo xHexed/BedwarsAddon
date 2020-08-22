@@ -12,14 +12,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class BedwarsAddon extends JavaPlugin {
     public static BedwarsAddon getInstance() {
-/* 11 */     return plugin;
-/*    */   }
+        return plugin;
+    }
+
     private static BedwarsAddon plugin;
     static Set<String> debug;
     private static FileConfiguration debugConfig;
@@ -37,23 +38,23 @@ public class BedwarsAddon extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                final List<Arena> list = BedwarsAPI.getArenas();
-                if (list.size() == 0) return;
-                final Arena arena = list.get(0);
-                Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + arena.GetStatus().name() + ":" + arena.getPlayers().size());
+                for (final Arena arena : BedwarsAPI.getArenas()) {
+                    Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + arena.GetStatus().name() + ":" + arena.getPlayers().size());
+                }
             }
         }.runTaskTimerAsynchronously(this, 0, 200);
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                final List<Arena> list = BedwarsAPI.getArenas();
-                if (list.size() == 0) return;
-                final Arena arena = list.get(0);
+                final Collection<Player> players = new HashSet<>();
+                for (final Arena arena : BedwarsAPI.getArenas()) {
+                    players.addAll(arena.getPlayers());
+                    players.addAll(arena.getSpectators());
+                }
                 for (final Player player : Bukkit.getOnlinePlayers()) {
-                    if (arena.getPlayers().contains(player) ||
-                    arena.getSpectators().contains(player) ||
-                    debug.contains(player.getName())) continue;
+                    if (players.contains(player) ||
+                            debug.contains(player.getName())) continue;
                     Util.connect(player);
                 }
             }
@@ -62,7 +63,9 @@ public class BedwarsAddon extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Util.sendDataToSocket("disable:" + BedwarsAPI.getArenas().get(0).getName());
+        for (final Arena arena : BedwarsAPI.getArenas()) {
+            Util.sendDataToSocket("disable:" + arena.getName());
+        }
     }
 
     public static void reloadSettings() {
