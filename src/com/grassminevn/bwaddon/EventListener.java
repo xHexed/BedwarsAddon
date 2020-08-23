@@ -60,10 +60,8 @@ public class EventListener implements Listener {
 
   @EventHandler(ignoreCancelled = true)
   public void onShopBuy(final ShopBuyEvent event) {
-    if (!event.getProblems().isEmpty()) {
-      if (event.getProblems().contains(ShopBuyEvent.ShopBuyProblem.DEFAULT_NOT_ENOUGH_ITEMS))
-        return;
-    }
+    if (event.getProblems().contains(ShopBuyEvent.ShopBuyProblem.DEFAULT_NOT_ENOUGH_ITEMS))
+      return;
     if (event.getShopItem().getIcon().getType().name().contains("SWORD")) {
       event.getBuyer().getInventory().remove(Material.WOOD_SWORD);
     }
