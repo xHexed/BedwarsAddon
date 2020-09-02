@@ -1,5 +1,6 @@
 package com.grassminevn.bwaddon;
 
+import com.grassminevn.bwaddon.handler.PlaceholderHandler;
 import de.marcely.bedwars.api.Arena;
 import de.marcely.bedwars.api.BedwarsAPI;
 import org.bukkit.Bukkit;
@@ -59,6 +60,8 @@ public class BedwarsAddon extends JavaPlugin {
                 }
             }
         }.runTaskTimerAsynchronously(this, 0, 20);
+
+        new PlaceholderHandler().register();
     }
 
     @Override

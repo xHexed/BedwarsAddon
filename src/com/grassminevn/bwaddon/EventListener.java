@@ -1,5 +1,6 @@
 package com.grassminevn.bwaddon;
 
+import com.grassminevn.bwaddon.handler.ArenaPhaseHandler;
 import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.*;
 import org.bukkit.Material;
@@ -56,6 +57,16 @@ public class EventListener implements Listener {
   public void onArenaUpdate(final ArenaStatusUpdateEvent event) {
     final Arena arena = event.getArena();
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
+  }
+
+  @EventHandler
+  public void onArenaStart(final RoundStartEvent event) {
+    ArenaPhaseHandler.startArena();
+  }
+
+  @EventHandler
+  public void onArenaEnd(final RoundEndEvent event) {
+    ArenaPhaseHandler.endArena();
   }
 
   @EventHandler(ignoreCancelled = true)
