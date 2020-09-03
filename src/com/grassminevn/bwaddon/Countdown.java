@@ -58,7 +58,7 @@ public abstract class Countdown implements Runnable {
 
     private void setNextMoment() {
         if (!runningMoments.isEmpty()) {
-            nextMoment = runningMoments.pollFirst().time - currentMoment.time;
+            nextMoment = runningMoments.peek().time - currentMoment.time;
             currentMoment = runningMoments.pop();
         }
         else {
