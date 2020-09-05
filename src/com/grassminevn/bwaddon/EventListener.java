@@ -1,6 +1,6 @@
 package com.grassminevn.bwaddon;
 
-import com.grassminevn.bwaddon.handler.ArenaPhaseHandler;
+import com.grassminevn.bwaddon.phase.ArenaPhaseHandler;
 import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.*;
 import org.bukkit.Material;

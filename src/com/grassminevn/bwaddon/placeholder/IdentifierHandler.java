@@ -1,4 +1,4 @@
-package com.grassminevn.bwaddon.handler;
+package com.grassminevn.bwaddon.placeholder;
 
 import org.bukkit.OfflinePlayer;
 

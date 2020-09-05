@@ -1,4 +1,4 @@
-package com.grassminevn.bwaddon;
+package com.grassminevn.bwaddon.phase;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;

@@ -1,6 +1,6 @@
 package com.grassminevn.bwaddon;
 
-import com.grassminevn.bwaddon.handler.PlaceholderHandler;
+import com.grassminevn.bwaddon.placeholder.PlaceholderHandler;
 import de.marcely.bedwars.api.Arena;
 import de.marcely.bedwars.api.BedwarsAPI;
 import org.bukkit.Bukkit;
