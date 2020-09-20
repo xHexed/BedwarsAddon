@@ -55,18 +55,16 @@ public class EventListener implements Listener {
 
   @EventHandler
   public void onArenaUpdate(final ArenaStatusUpdateEvent event) {
+    switch (event.getStatus()) {
+      case Running:
+        ArenaPhaseHandler.startArena();
+        break;
+      case EndLobby:
+        ArenaPhaseHandler.endArena();
+        break;
+    }
     final Arena arena = event.getArena();
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
-  }
-
-  @EventHandler
-  public void onArenaStart(final RoundStartEvent event) {
-    ArenaPhaseHandler.startArena();
-  }
-
-  @EventHandler
-  public void onArenaEnd(final RoundEndEvent event) {
-    ArenaPhaseHandler.endArena();
   }
 
   @EventHandler(ignoreCancelled = true)
