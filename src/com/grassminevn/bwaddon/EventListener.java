@@ -1,6 +1,7 @@
 package com.grassminevn.bwaddon;
 
 import com.grassminevn.bwaddon.phase.ArenaPhaseHandler;
+import com.grassminevn.bwaddon.rank.ArenaRankHandler;
 import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.*;
 import org.bukkit.Material;
@@ -11,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -55,15 +57,17 @@ public class EventListener implements Listener {
 
   @EventHandler
   public void onArenaUpdate(final ArenaStatusUpdateEvent event) {
+    final Arena arena = event.getArena();
     switch (event.getStatus()) {
       case Running:
         ArenaPhaseHandler.startArena();
+        ArenaRankHandler.handleArenaStart(arena);
         break;
       case EndLobby:
         ArenaPhaseHandler.endArena();
+        ArenaRankHandler.handleArenaEnd(arena);
         break;
     }
-    final Arena arena = event.getArena();
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
   }
 
@@ -113,5 +117,16 @@ public class EventListener implements Listener {
             !player.hasPotionEffect(PotionEffectType.BLINDNESS) &&
             player.getLocation().getBlock().getType() != Material.LADDER &&
             player.getLocation().getBlock().getType() != Material.VINE;
+  }
+
+  @EventHandler
+  public void onTeamEliminate(final TeamEliminateEvent event) {
+    ArenaRankHandler.handleTeamEliminate(event.getTeam());
+  }
+
+  @EventHandler
+  public void onPlayerDeath(final PlayerDeathEvent event) {
+    final Player killer = event.getEntity().getKiller();
+    if (killer != null) ArenaRankHandler.handlePlayerKill(killer);
   }
 }
