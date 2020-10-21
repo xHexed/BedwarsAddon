@@ -19,24 +19,6 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot-api/1.12.2-R0.1-SNAPSHOT/spigot-api-1.12.2-R0.1-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="PROVIDED">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/me/MathiasMC/PvPLevels/1.4.1/PvPLevels-1.4.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="PROVIDED">
-      <library>
-        <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/com/grassminevn/levels/1.4.1/levels-1.4.1.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -46,7 +28,7 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../DeathMessagesPrime/DeathMessagesPrime.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/me/clip/placeholderapi/2.10.9/placeholderapi-2.10.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -55,7 +37,18 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/me/clip/placeholderapi/2.10.9/placeholderapi-2.10.9.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-R0.1-SNAPSHOT/spigot-1.12.2-R0.1-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-R0.1-SNAPSHOT/spigot-1.12.2-R0.1-SNAPSHOT.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/me/MathiasMC/PvPLevels/2.0.6/PvPLevels-2.0.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

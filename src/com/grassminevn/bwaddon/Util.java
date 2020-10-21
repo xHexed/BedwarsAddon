@@ -29,8 +29,8 @@ public class Util {
 
     public static void connect(final Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(BedwarsAddon.getInstance(), () -> {
-            PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
-            LevelsAPI.api.syncSave(player.getUniqueId().toString());
+            PvPLevelsAPI.syncSave(player.getUniqueId().toString());
+            LevelsAPI.syncSave(player.getUniqueId());
             final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             final DataOutputStream out = new DataOutputStream(bytes);
             try {
