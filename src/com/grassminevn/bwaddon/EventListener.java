@@ -65,7 +65,7 @@ public class EventListener implements Listener {
         break;
       case EndLobby:
         ArenaPhaseHandler.endArena();
-        ArenaRankHandler.handleArenaEnd(arena);
+        ArenaRankHandler.handleArenaEnd();
         break;
     }
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
