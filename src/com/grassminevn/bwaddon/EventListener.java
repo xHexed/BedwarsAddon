@@ -1,6 +1,5 @@
 package com.grassminevn.bwaddon;
 
-import com.grassminevn.bwaddon.phase.ArenaPhaseHandler;
 import com.grassminevn.bwaddon.rank.ArenaRankHandler;
 import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.*;
@@ -21,16 +20,11 @@ import static com.grassminevn.bwaddon.Util.sendDataToSocket;
 
 public class EventListener implements Listener {
   @EventHandler
-  public void arenaDebug(final PlayerJoinArenaEvent event) {
-    if (event.getFailReason() == null) return;
-    System.out.println(event.getPlayer() + ":" + event.getFailReason().name());
-  }
-
-  @EventHandler
   public void onPlayerJoin(final PlayerJoinEvent event) {
     final Player player = event.getPlayer();
     if (BedwarsAddon.debug.contains(player.getName())) return;
     final de.marcely.bedwars.game.arena.Arena arena = (de.marcely.bedwars.game.arena.Arena) BedwarsAPI.getArenas().get(0);
+    if (arena == null) return;
     if (arena.GetStatus().equals(ArenaStatus.Running)) {
       BedwarsAPI.enterSpectatorMode(player, arena, SpectateReason.PLUGIN);
       return;
@@ -60,11 +54,11 @@ public class EventListener implements Listener {
     final Arena arena = event.getArena();
     switch (event.getStatus()) {
       case Running:
-        ArenaPhaseHandler.startArena();
+        //ArenaPhaseHandler.startArena();
         ArenaRankHandler.handleArenaStart(arena);
         break;
       case EndLobby:
-        ArenaPhaseHandler.endArena();
+        //ArenaPhaseHandler.endArena();
         ArenaRankHandler.handleArenaEnd();
         break;
     }
