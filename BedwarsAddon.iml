@@ -48,7 +48,7 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/me/MathiasMC/PvPLevels/2.0.6/PvPLevels-2.0.6.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/me/MathiasMC/PvPLevels/2.0.9/PvPLevels-2.0.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
