@@ -59,7 +59,7 @@ public class EventListener implements Listener {
         break;
       case EndLobby:
         //ArenaPhaseHandler.endArena();
-        ArenaRankHandler.handleArenaEnd();
+        //ArenaRankHandler.handleArenaEnd();
         break;
     }
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
@@ -116,6 +116,12 @@ public class EventListener implements Listener {
   @EventHandler
   public void onTeamEliminate(final TeamEliminateEvent event) {
     ArenaRankHandler.handleTeamEliminate(event.getTeam());
+  }
+
+  @EventHandler
+  public void onArenaEnd(final RoundEndEvent event) {
+    ArenaRankHandler.handleTeamEliminate(event.getWinnerTeam());
+    ArenaRankHandler.handleArenaEnd();
   }
 
   @EventHandler

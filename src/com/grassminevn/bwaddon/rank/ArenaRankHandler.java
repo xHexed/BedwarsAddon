@@ -13,14 +13,18 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class ArenaRankHandler {
-    private static final Map<Team, List<Player>> playerList = new EnumMap<>(Team.class);
+    private static final Map<Team, Collection<UUID>> playerList = new EnumMap<>(Team.class);
     private static final Collection<Team> eliminateList = new ArrayList<>();
     private static final HashMap<UUID, Integer> topKillList = new HashMap<>();
 
     public static void handleArenaStart(final Arena arena) {
         clearData();
         for (final Team team : arena.GetTeamColors().GetEnabledTeams()) {
-            playerList.put(team, arena.getPlayersInTeam(team));
+            final Collection<UUID> uuids = new ArrayList<>();
+            for (final Player player : arena.getPlayersInTeam(team)) {
+                uuids.add(player.getUniqueId());
+            }
+            playerList.put(team, uuids);
         }
     }
 
@@ -37,15 +41,16 @@ public class ArenaRankHandler {
             final List<ITeam> teamList = new ArrayList<>();
             for (final Team team : eliminateList) {
                 final ITeam playerTeam = new com.grassminevn.levels.jskills.Team();
-                for (final Player player : playerList.get(team)) {
-                    final PlayerConnect playerConnect = LevelsAPI.getPlayerConnect(player.getUniqueId());
+                for (final UUID uuid : playerList.get(team)) {
+                    final PlayerConnect playerConnect = LevelsAPI.getPlayerConnect(uuid);
                     playerTeam.put(playerConnect, playerConnect.getRating());
                 }
                 teamList.add(playerTeam);
             }
-            final int[] pos = new int[eliminateList.size()];
-            for (int i = 1; i <= eliminateList.size(); i++) {
-                pos[i - 1] = i;
+            final int rank = eliminateList.size();
+            final int[] pos = new int[rank];
+            for (int i = 0; i < rank; i++) {
+                pos[i] = rank - i;
             }
             LevelsAPI.calculateRatings(teamList, pos);
             clearData();
