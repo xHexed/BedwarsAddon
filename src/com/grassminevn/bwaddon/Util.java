@@ -1,6 +1,11 @@
 package com.grassminevn.bwaddon;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.grassminevn.levels.LevelsAPI;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import me.MathiasMC.PvPLevels.api.PvPLevelsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -8,39 +13,29 @@ import org.bukkit.entity.Player;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
 
 public class Util {
     static String lobby;
+    static final ChannelFuture client = new Bootstrap()
+            .group(new NioEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("BedwarsHub Server IO #%d").setDaemon(true).build()))
+            .channel(NioSocketChannel.class)
+            .connect("127.0.0.1", 2).syncUninterruptibly();
 
     public static void sendDataToSocket(final String data) {
-        try {
-            final Socket client = new Socket(InetAddress.getLocalHost(), 2);
-            final DataOutputStream ds = new DataOutputStream(client.getOutputStream());
-            ds.writeUTF(data);
-            ds.close();
-            client.close();
-        }
-        catch (final IOException e) {
-            BedwarsAddon.getInstance().getLogger().warning("Error on sending data: " + e.toString());
-        }
+        client.channel().writeAndFlush(data);
     }
 
     public static void connect(final Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(BedwarsAddon.getInstance(), () -> {
             PvPLevelsAPI.syncSave(player.getUniqueId().toString());
             LevelsAPI.syncSave(player.getUniqueId());
-            final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            final DataOutputStream out = new DataOutputStream(bytes);
-            try {
+            try (final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                 final DataOutputStream out = new DataOutputStream(bytes)){
                 out.writeUTF("Connect");
                 out.writeUTF(lobby);
                 player.sendPluginMessage(BedwarsAddon.getInstance(), "BungeeCord", bytes.toByteArray());
                 out.flush();
                 bytes.flush();
-                out.close();
-                bytes.close();
             }
             catch (final IOException e) {
                 e.printStackTrace();

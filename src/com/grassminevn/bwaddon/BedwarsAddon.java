@@ -69,6 +69,7 @@ public class BedwarsAddon extends JavaPlugin {
         for (final Arena arena : BedwarsAPI.getArenas()) {
             Util.sendDataToSocket("disable:" + arena.getName());
         }
+        Util.client.channel().close().syncUninterruptibly();
     }
 
     public static void reloadSettings() {
