@@ -7,7 +7,6 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import me.MathiasMC.PvPLevels.api.PvPLevelsAPI;
 import org.bukkit.Bukkit;
@@ -28,7 +27,7 @@ public class Util {
                     channel.pipeline().addLast(new StringEncoder());
                 }
             })
-            .connect("127.0.0.1", 2).syncUninterruptibly();
+            .connect("127.0.0.1", 2);
 
     public static void sendDataToSocket(final String data) {
         client.channel().writeAndFlush(data);
