@@ -3,9 +3,12 @@ package com.grassminevn.bwaddon;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.grassminevn.levels.LevelsAPI;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import me.MathiasMC.PvPLevels.api.PvPLevelsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,6 +22,12 @@ public class Util {
     static final ChannelFuture client = new Bootstrap()
             .group(new NioEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("BedwarsHub Server IO #%d").setDaemon(true).build()))
             .channel(NioSocketChannel.class)
+            .handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(final SocketChannel channel) {
+                    channel.pipeline().addLast(new StringEncoder());
+                }
+            })
             .connect("127.0.0.1", 2).syncUninterruptibly();
 
     public static void sendDataToSocket(final String data) {
