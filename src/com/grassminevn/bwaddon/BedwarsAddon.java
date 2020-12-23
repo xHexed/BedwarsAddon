@@ -9,13 +9,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class BedwarsAddon extends JavaPlugin {
     public static BedwarsAddon getInstance() {
@@ -25,6 +27,8 @@ public class BedwarsAddon extends JavaPlugin {
     private static BedwarsAddon plugin;
     static Set<String> debug;
     private static FileConfiguration debugConfig;
+    NettyClient client;
+    private Future<?> clientSetupTask;
 
     @Override
     public void onEnable() {
@@ -36,40 +40,44 @@ public class BedwarsAddon extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new EventListener(), this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
+        clientSetupTask = Util.ASYNC_SCHEDULER_EXECUTER.submit(() -> {
+            client = new NettyClient(this);
+            client.start();
+            Util.ASYNC_SCHEDULER_EXECUTER.scheduleAtFixedRate(() -> {
                 for (final Arena arena : BedwarsAPI.getArenas()) {
                     Util.sendDataToSocket("enable:" + arena.getName() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers() + ":" + arena.GetStatus().name() + ":" + arena.getPlayers().size());
                 }
-            }
-        }.runTaskTimerAsynchronously(this, 0, 200);
+            }, 0, 10, TimeUnit.SECONDS);
+        });
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                final Collection<Player> players = new HashSet<>();
-                for (final Arena arena : BedwarsAPI.getArenas()) {
-                    players.addAll(arena.getPlayers());
-                    players.addAll(arena.getSpectators());
-                }
-                for (final Player player : Bukkit.getOnlinePlayers()) {
-                    if (players.contains(player) ||
-                            debug.contains(player.getName())) continue;
-                    Util.connect(player);
-                }
+        Util.ASYNC_SCHEDULER_EXECUTER.scheduleAtFixedRate(() -> {
+            final Collection<Player> players = new HashSet<>();
+            for (final Arena arena : BedwarsAPI.getArenas()) {
+                players.addAll(arena.getPlayers());
+                players.addAll(arena.getSpectators());
             }
-        }.runTaskTimerAsynchronously(this, 0, 20);
+            for (final Player player : Bukkit.getOnlinePlayers()) {
+                if (players.contains(player) ||
+                        debug.contains(player.getName())) continue;
+                Util.connect(player);
+            }
+        }, 0, 1, TimeUnit.SECONDS);
 
         new PlaceholderHandler().register();
     }
 
     @Override
     public void onDisable() {
+        try {
+            clientSetupTask.get();
+        } catch (final InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
         for (final Arena arena : BedwarsAPI.getArenas()) {
             Util.sendDataToSocket("disable:" + arena.getName());
         }
-        Util.client.channel().close().syncUninterruptibly();
+        client.stop();
+        Util.ASYNC_SCHEDULER_EXECUTER.shutdown();
     }
 
     public static void reloadSettings() {
@@ -88,7 +96,7 @@ public class BedwarsAddon extends JavaPlugin {
     }
 
     public static void saveDebug() {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        Util.ASYNC_SCHEDULER_EXECUTER.execute(() -> {
             try {
                 debugConfig.save(new File(plugin.getDataFolder(), "debug.yml"));
             } catch (final IOException e) {
