@@ -50,12 +50,9 @@ public class NettyClient {
     }
 
     public void sendMessage(final Object obj) {
-        if (channel.isActive()) {
-            channel.writeAndFlush(obj);
-        }
-        else {
+        if (!channel.isActive()) {
             connect();
-            channel.writeAndFlush(obj).syncUninterruptibly();
         }
+        channel.writeAndFlush(obj);
     }
 }
