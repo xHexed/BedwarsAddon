@@ -3,6 +3,7 @@ package com.grassminevn.bwaddon;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -45,6 +46,7 @@ public class NettyClient {
 
     private void connect() {
         channel = bootstrapper.connect(address).syncUninterruptibly().channel();
+        channel.closeFuture().addListener((ChannelFutureListener) future -> plugin.getLogger().info("Netty client has disconnected."));
     }
 
     public void sendMessage(final Object obj) {
@@ -54,7 +56,6 @@ public class NettyClient {
         else {
             connect();
             channel.writeAndFlush(obj).syncUninterruptibly();
-            channel.close();
         }
     }
 }
