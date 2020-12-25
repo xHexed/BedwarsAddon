@@ -1,5 +1,6 @@
 package com.grassminevn.bwaddon;
 
+import com.grassminevn.bwaddon.phase.ArenaPhaseHandler;
 import com.grassminevn.bwaddon.rank.ArenaRankHandler;
 import de.marcely.bedwars.api.*;
 import de.marcely.bedwars.api.event.*;
@@ -54,12 +55,10 @@ public class EventListener implements Listener {
     final Arena arena = event.getArena();
     switch (event.getStatus()) {
       case Running:
-        //ArenaPhaseHandler.startArena();
+        ArenaPhaseHandler.startArena();
         ArenaRankHandler.handleArenaStart(arena);
         break;
       case EndLobby:
-        //ArenaPhaseHandler.endArena();
-        //ArenaRankHandler.handleArenaEnd();
         break;
     }
     sendDataToSocket("update:" + arena.getName() + ":" + event.getStatus().name() + ":" + arena.getPlayers().size() + ":" + arena.getAuthor() + ":" + arena.getMaxPlayers());
