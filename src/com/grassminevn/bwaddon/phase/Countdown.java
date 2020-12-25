@@ -1,10 +1,11 @@
 package com.grassminevn.bwaddon.phase;
 
-import org.bukkit.Bukkit;
+import com.grassminevn.bwaddon.Util;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Deque;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public abstract class Countdown implements Runnable {
     private final int duration;
@@ -14,7 +15,7 @@ public abstract class Countdown implements Runnable {
     private int nextMoment;
     private Moment currentMoment = Moment.EMPTY;
     private int secondsSinceStart;
-    private int taskId = -1;
+    private ScheduledFuture<?> task;
 
     protected Countdown(final Plugin plugin, final int duration, final Deque<Moment> moments) {
         this.plugin = plugin;
@@ -52,8 +53,7 @@ public abstract class Countdown implements Runnable {
         if (isRunning()) {
             throw new RuntimeException("Task " + this + " already scheduled!");
         }
-        final BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin, this, 0L, 20L);
-        taskId = task.getTaskId();
+        task = Util.ASYNC_SCHEDULER_EXECUTER.scheduleAtFixedRate(this, 0, 1, TimeUnit.SECONDS);
     }
 
     private void setNextMoment() {
@@ -68,8 +68,7 @@ public abstract class Countdown implements Runnable {
     }
 
     public synchronized void cancel() {
-        Bukkit.getScheduler().cancelTask(getTaskId());
-        taskId = -1;
+        task.cancel(true);
         secondsSinceStart = 0;
 
         runningMoments = moments;
@@ -78,18 +77,18 @@ public abstract class Countdown implements Runnable {
     }
 
     public boolean isRunning() {
-        return (taskId != -1);
+        return !task.isDone();
     }
 
-    private int getTaskId() {
+    private ScheduledFuture getTask() {
         if (!isRunning()) {
             throw new RuntimeException("Task " + this + " not scheduled yet");
         }
-        return taskId;
+        return task;
     }
 
     public final String toString() {
-        return getClass().getSimpleName() + "{" + duration + ", id=" + taskId + "}";
+        return getClass().getSimpleName() + "{" + duration + ", task=" + task.toString() + "}";
     }
 
     protected abstract void onTick();

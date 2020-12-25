@@ -1,12 +1,11 @@
 package com.grassminevn.bwaddon.rank;
 
-import com.grassminevn.bwaddon.BedwarsAddon;
+import com.grassminevn.bwaddon.Util;
 import com.grassminevn.levels.LevelsAPI;
 import com.grassminevn.levels.data.PlayerConnect;
 import com.grassminevn.levels.jskills.ITeam;
 import de.marcely.bedwars.api.Arena;
 import de.marcely.bedwars.api.Team;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -37,7 +36,7 @@ public class ArenaRankHandler {
     }
 
     public static void handleArenaEnd() {
-        Bukkit.getScheduler().runTaskAsynchronously(BedwarsAddon.getInstance(), () -> {
+        Util.ASYNC_SCHEDULER_EXECUTER.execute(() -> {
             final List<ITeam> teamList = new ArrayList<>();
             for (final Team team : eliminateList) {
                 final ITeam playerTeam = new com.grassminevn.levels.jskills.Team();
